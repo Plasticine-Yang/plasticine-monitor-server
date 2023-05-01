@@ -26,7 +26,5 @@ export function loadYAMLConfiguration() {
   const fileContent = readFileSync(pathToTarget, { encoding: 'utf-8' })
   const resolvedConfig = parse(fileContent)
 
-  console.log('config', resolvedConfig)
-
   return resolvedConfig
 }
