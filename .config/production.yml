@@ -6,5 +6,5 @@ mysql:
   port: 3306
   username: root
   password: root
-  database: nest-demo
+  database: plasticine-monitor
   synchronize: false
