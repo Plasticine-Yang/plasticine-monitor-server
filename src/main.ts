@@ -54,6 +54,9 @@ async function bootstrap() {
   // 全局字段校验
   app.useGlobalPipes(new ValidationPipe())
 
+  // 允许跨域
+  app.enableCors()
+
   await app.listen(port)
 
   logger.log(`Server listening on http://localhost:${port}`)
