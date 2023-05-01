@@ -7,25 +7,25 @@ services:
     ports:
       - '8888:8888'
     networks:
-      - mysql
+      - mongo
     depends_on:
-      - mysql
+      - mongo
 
-  # MySQL
-  mysql:
-    image: mysql:8.0
+  # MongoDB
+  mongo:
+    image: mongo
+    restart: always
     ports:
-      - 3306:3306
-    networks:
-      - mysql
-    volumes:
-      - mysql:/var/lib/mysql:rw
+      - 27017:27017
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: plasticine-monitor
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: plasticine-monitor
+    volumes:
+      - mongo:/data/db:rw
 
 networks:
-  mysql:
+  mongo:
 
 volumes:
-  mysql:
+  mongo:

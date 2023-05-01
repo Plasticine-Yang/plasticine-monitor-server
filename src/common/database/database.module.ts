@@ -2,13 +2,9 @@ import { ConfigurableModuleBuilder, DynamicModule, Module } from '@nestjs/common
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
-import type { DatabaseConfig, ProjectConfig } from 'src/types'
+import type { ProjectConfig } from 'src/types'
 
-interface DatabaseModuleOptions {
-  type: 'mysql'
-}
-
-const { ConfigurableModuleClass, OPTIONS_TYPE } = new ConfigurableModuleBuilder<DatabaseModuleOptions>({
+const { ConfigurableModuleClass } = new ConfigurableModuleBuilder({
   moduleName: 'Database',
 })
   .setClassMethodName('forRoot')
@@ -16,32 +12,21 @@ const { ConfigurableModuleClass, OPTIONS_TYPE } = new ConfigurableModuleBuilder<
 
 @Module({})
 export class DatabaseModule extends ConfigurableModuleClass {
-  static forRoot(options?: typeof OPTIONS_TYPE): DynamicModule {
-    const type = options?.type ?? 'mysql'
-
+  static forRoot(): DynamicModule {
     return TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
 
       /** @description Load database configuration. */
       useFactory: (configService: ConfigService<ProjectConfig>) => {
-        let databaseConfig: DatabaseConfig | undefined
-
-        switch (type) {
-          case 'mysql':
-            databaseConfig = configService.get('mysql', { infer: true })
-            break
-
-          default:
-            throw new Error(`The database type '${type}' has not been supported.`)
-        }
+        const databaseConfig = configService.get('mongoDB', { infer: true })
 
         if (databaseConfig === undefined) {
-          throw new Error(`Unable to load configuration of database '${type}'.`)
+          throw new Error(`Unable to load configuration of database.`)
         }
 
         return {
-          type,
+          type: 'mongodb',
           ...databaseConfig,
           autoLoadEntities: true,
         }

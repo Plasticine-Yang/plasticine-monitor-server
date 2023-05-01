@@ -1,10 +1,7 @@
 app:
-  port: 6666
+  port: 8868
 
-mysql:
-  host: localhost
-  port: 6606
-  username: root
-  password: root
+mongoDB:
+  url: mongodb://root:root@localhost:27018/
+  authSource: admin
   database: plasticine-monitor
-  synchronize: true

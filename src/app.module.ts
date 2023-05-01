@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { LoggerModule } from 'nestjs-pino'
-import { DatabaseModule } from './common/database'
 
+import { DatabaseModule } from './common/database'
 import { configModuleOptions } from './common/use-yaml-config'
 import { ApisCodeModule } from './modules/api-codes/api-codes.module'
+import { BrowserEventModule } from './modules/browser-event/browser-event.module'
 import { PostModule } from './modules/post/post.module'
 
 @Module({
@@ -23,11 +24,12 @@ import { PostModule } from './modules/post/post.module'
     }),
 
     // 数据库
-    DatabaseModule.forRoot({ type: 'mysql' }),
+    DatabaseModule.forRoot(),
 
     // ============== business modules ==============
     ApisCodeModule,
     PostModule,
+    BrowserEventModule,
   ],
 })
 export class AppModule {}
