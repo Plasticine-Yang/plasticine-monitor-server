@@ -1,0 +1,10 @@
+app:
+  port: 6666
+
+mysql:
+  host: localhost
+  port: 6606
+  username: root
+  password: root
+  database: nest-demo
+  synchronize: true

@@ -1,0 +1,31 @@
+services:
+  # Project
+  plasticine-monitor:
+    container_name: plasticine-monitor
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - '8888:8888'
+    networks:
+      - mysql
+    depends_on:
+      - mysql
+
+  # MySQL
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    networks:
+      - mysql
+    volumes:
+      - mysql:/var/lib/mysql:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: plasticine-monitor
+
+networks:
+  mysql:
+
+volumes:
+  mysql:

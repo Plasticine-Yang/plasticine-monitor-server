@@ -1,0 +1,10 @@
+app:
+  port: 8888
+
+mysql:
+  host: mysql
+  port: 3306
+  username: root
+  password: root
+  database: nest-demo
+  synchronize: false
