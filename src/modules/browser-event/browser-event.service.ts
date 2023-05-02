@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { randomUUID } from 'crypto'
 import { MongoRepository } from 'typeorm'
 
 import { CreateBrowserEventDto } from './dto/create-browser-event.dto'
@@ -12,6 +11,7 @@ import { PerformancePayload } from './entities/performance-event/helper'
 import { UserBehaviorEvent } from './entities/user-behavior-event'
 import { UserBehaviorPayload } from './entities/user-behavior-event/helper'
 import { EventTypeEnum } from './enums'
+import { generateJSErrorEventId } from './helper'
 
 @Injectable()
 export class BrowserEventService {
@@ -26,24 +26,33 @@ export class BrowserEventService {
 
   private createBaseEvent(createBrowserEventDto: CreateBrowserEventDto): BaseEvent {
     return {
-      eventId: randomUUID(),
       environmentInfo: createBrowserEventDto.environmentInfo,
     }
   }
 
+  /**
+   * 需要先根据 payload 计算 eventId，如果是同一个 error 则不入库，避免存储大量重复数据
+   */
   private async createJSErrorEvent(createBrowserEventDto: CreateBrowserEventDto) {
     const baseEvent = this.createBaseEvent(createBrowserEventDto)
 
-    const jsErrorEvent: JSErrorEvent = {
-      ...baseEvent,
-      eventType: EventTypeEnum.JSError,
-      payload: createBrowserEventDto.payload as JSErrorPayload,
+    const eventId = generateJSErrorEventId(createBrowserEventDto.payload as JSErrorPayload)
+
+    const hasEvent =
+      (await this.jsErrorEventRepository.count({
+        eventId,
+      })) > 0
+
+    if (!hasEvent) {
+      const jsErrorEvent: JSErrorEvent = {
+        ...baseEvent,
+        eventId: eventId,
+        eventType: EventTypeEnum.JSError,
+        payload: createBrowserEventDto.payload as JSErrorPayload,
+      }
+
+      await this.jsErrorEventRepository.save(jsErrorEvent)
     }
-
-    // TODO 根据 payload 计算 eventId
-    // jsErrorEvent.eventId = ''
-
-    await this.jsErrorEventRepository.save(jsErrorEvent)
   }
 
   private async createPerformanceEvent(createBrowserEventDto: CreateBrowserEventDto) {

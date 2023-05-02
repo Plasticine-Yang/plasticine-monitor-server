@@ -7,6 +7,9 @@ import { JSErrorPayload } from './helper'
 @Entity()
 export class JSErrorEvent extends BaseEvent {
   @Column()
+  eventId: string
+
+  @Column()
   eventType: EventTypeEnum.JSError
 
   @Column(() => JSErrorPayload)
