@@ -9,4 +9,7 @@ export class API_CODE {
 
   @ApiCodeDescription('实体已存在')
   static ENTITY_DUPLICATED = 1001
+
+  @ApiCodeDescription('Query 参数缺失')
+  static QUERY_INCOMPLETE = 1002
 }
