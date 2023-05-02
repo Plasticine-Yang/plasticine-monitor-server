@@ -7,6 +7,7 @@ import { configModuleOptions } from './common/use-yaml-config'
 import { ApisCodeModule } from './modules/api-codes/api-codes.module'
 import { BrowserEventModule } from './modules/browser-event/browser-event.module'
 import { PostModule } from './modules/post/post.module'
+import { ProjectModule } from './modules/project/project.module'
 
 @Module({
   // ============== application modules ==============
@@ -30,6 +31,7 @@ import { PostModule } from './modules/post/post.module'
     ApisCodeModule,
     PostModule,
     BrowserEventModule,
+    ProjectModule,
   ],
 })
 export class AppModule {}
