@@ -73,7 +73,7 @@ export class BrowserEventService {
     const userBehaviorEvent: UserBehaviorEvent = {
       ...baseEvent,
       eventType: EventTypeEnum.UserBehavior,
-      payload: createBrowserEventDto.payload as UserBehaviorPayload,
+      payload: createBrowserEventDto.payload as UserBehaviorPayload[],
     }
 
     await this.userBehaviorEventRepository.save(userBehaviorEvent)

@@ -10,5 +10,5 @@ export class UserBehaviorEvent extends BaseEvent {
   eventType: EventTypeEnum.UserBehavior
 
   @Column(() => UserBehaviorPayload)
-  payload: UserBehaviorPayload
+  payload: UserBehaviorPayload[]
 }

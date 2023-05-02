@@ -7,7 +7,7 @@ import type { EventTypeEnum } from '../enums'
 export class CreateBrowserEventDto {
   eventType: EventTypeEnum
 
-  payload: JSErrorPayload | PerformancePayload | UserBehaviorPayload
+  payload: JSErrorPayload | PerformancePayload | UserBehaviorPayload[]
 
   environmentInfo: EnvironmentInfo
 }
