@@ -10,7 +10,7 @@ interface BusinessHttpExceptionOptions extends HttpExceptionOptions {
  */
 class BusinessHttpException extends HttpException {
   constructor(public code: number, public message: string, options?: BusinessHttpExceptionOptions) {
-    super(message, options?.httpStatusCode ?? 500, {
+    super(message, options?.httpStatusCode ?? 200, {
       cause: options?.cause,
       description: options?.description,
     })

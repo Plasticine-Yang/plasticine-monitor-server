@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
+import { Project } from '../project/entities/project.entity'
 import { BrowserEventController } from './browser-event.controller'
 import { BrowserEventService } from './browser-event.service'
 import { JSErrorEvent } from './entities/js-error-event'
@@ -11,7 +12,7 @@ import { PerformanceEventService } from './performance-event.service'
 import { UserBehaviorEventService } from './user-behavior-event.service'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([JSErrorEvent, PerformanceEvent, UserBehaviorEvent])],
+  imports: [TypeOrmModule.forFeature([JSErrorEvent, PerformanceEvent, UserBehaviorEvent, Project])],
   controllers: [BrowserEventController],
   providers: [BrowserEventService, JSErrorEventService, PerformanceEventService, UserBehaviorEventService],
 })

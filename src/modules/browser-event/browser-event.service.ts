@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { MongoRepository } from 'typeorm'
 
+import { BusinessHttpException } from 'src/common/exceptions'
+import { API_CODE } from 'src/constants'
+import { Project } from '../project/entities/project.entity'
 import { CreateBrowserEventDto } from './dto/create-browser-event.dto'
 import { BaseEvent } from './entities/base-event.entity'
 import { JSErrorEvent } from './entities/js-error-event'
@@ -12,6 +15,7 @@ import { UserBehaviorEvent } from './entities/user-behavior-event'
 import { UserBehaviorPayload } from './entities/user-behavior-event/helper'
 import { EventTypeEnum } from './enums'
 import { generateJSErrorEventId } from './helper'
+import { ObjectId } from 'mongodb'
 
 @Injectable()
 export class BrowserEventService {
@@ -23,6 +27,9 @@ export class BrowserEventService {
 
   @InjectRepository(UserBehaviorEvent)
   private userBehaviorEventRepository: MongoRepository<UserBehaviorEvent>
+
+  @InjectRepository(Project)
+  private projectRepository: MongoRepository<Project>
 
   private createBaseEvent(createBrowserEventDto: CreateBrowserEventDto): BaseEvent {
     return {
@@ -80,21 +87,38 @@ export class BrowserEventService {
   }
 
   async create(createBrowserEventDto: CreateBrowserEventDto) {
-    switch (createBrowserEventDto.eventType) {
-      case EventTypeEnum.JSError:
-        this.createJSErrorEvent(createBrowserEventDto)
-        break
+    let projectExist = false
+    const projectId = createBrowserEventDto.environmentInfo.projectId
 
-      case EventTypeEnum.Performance:
-        this.createPerformanceEvent(createBrowserEventDto)
-        break
+    try {
+      // 先查询 projectId 是否存在，只有存在的时候才允许入库
+      const project = await this.projectRepository.findOneBy({
+        _id: new ObjectId(projectId),
+      })
+      projectExist = project !== null
+    } catch (error) {
+      projectExist = false
+    }
 
-      case EventTypeEnum.UserBehavior:
-        this.createUserBehaviorEvent(createBrowserEventDto)
-        break
+    if (projectExist) {
+      switch (createBrowserEventDto.eventType) {
+        case EventTypeEnum.JSError:
+          this.createJSErrorEvent(createBrowserEventDto)
+          break
 
-      default:
-        break
+        case EventTypeEnum.Performance:
+          this.createPerformanceEvent(createBrowserEventDto)
+          break
+
+        case EventTypeEnum.UserBehavior:
+          this.createUserBehaviorEvent(createBrowserEventDto)
+          break
+
+        default:
+          break
+      }
+    } else {
+      throw new BusinessHttpException(API_CODE.ENTITY_NOT_EXIST, `projectId: '${projectId}' 不存在，不允许上报事件`)
     }
 
     return null

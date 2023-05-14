@@ -23,7 +23,6 @@ export class BrowserEventController {
   @Post()
   create(@Res({ passthrough: true }) response: Response, @Body() createBrowserEventDto: CreateBrowserEventDto) {
     response.status(HttpStatus.OK)
-
     return this.browserEventService.create(createBrowserEventDto)
   }
 
