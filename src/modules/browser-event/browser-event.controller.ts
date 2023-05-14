@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Query, Res } from '@nestjs/common'
+import { Body, Controller, Get, HttpStatus, Param, Post, Query, Res, UsePipes } from '@nestjs/common'
 import type { Response } from 'express'
 
 import { BusinessHttpException } from 'src/common/exceptions'
@@ -10,6 +10,7 @@ import { EventQuery } from './dto/event-query.dto'
 import { JSErrorEventService } from './js-error-event.service'
 import { PerformanceEventService } from './performance-event.service'
 import { UserBehaviorEventService } from './user-behavior-event.service'
+import { EventQueryValidationPipe } from './pipe'
 
 @Controller('browser-event')
 export class BrowserEventController {
@@ -27,56 +28,37 @@ export class BrowserEventController {
   }
 
   @Get('js-error-event')
-  findAllJSErrorEventByProjectId(@Query() query: EventQuery) {
-    if (!query.projectId) {
-      throw new BusinessHttpException(API_CODE.QUERY_INCOMPLETE, '缺少 projectId query 参数')
-    }
-
+  findAllJSErrorEventByProjectId(@Query(new EventQueryValidationPipe()) query: EventQuery) {
     return this.jsErrorEventService.findAllEvent(query)
   }
 
   @Get('js-error-event/:id')
-  findJSErrorEventById(@Param('id') id: string, @Query() query: EventQuery) {
-    if (!query.projectId) {
-      throw new BusinessHttpException(API_CODE.QUERY_INCOMPLETE, '缺少 projectId query 参数')
-    }
-
+  findJSErrorEventById(@Param('id') id: string, @Query(new EventQueryValidationPipe()) query: EventQuery) {
     return this.jsErrorEventService.findEventById(id, query)
   }
 
   @Get('performance-event')
-  findAllPerformanceEventByProjectId(@Query() query: EventQuery) {
-    if (!query.projectId) {
-      throw new BusinessHttpException(API_CODE.QUERY_INCOMPLETE, '缺少 projectId query 参数')
-    }
-
+  findAllPerformanceEventByProjectId(@Query(new EventQueryValidationPipe()) query: EventQuery) {
     return this.performanceEventService.findAllEvent(query)
   }
 
   @Get('performance-event/:id')
-  findPerformanceEventById(@Param('id') id: string, @Query() query: EventQuery) {
-    if (!query.projectId) {
-      throw new BusinessHttpException(API_CODE.QUERY_INCOMPLETE, '缺少 projectId query 参数')
-    }
-
+  findPerformanceEventById(@Param('id') id: string, @Query(new EventQueryValidationPipe()) query: EventQuery) {
     return this.performanceEventService.findEventById(id, query)
   }
 
-  @Get('user-behavior-event')
-  findAllUserBehaviorEventByProjectId(@Query() query: EventQuery) {
-    if (!query.projectId) {
-      throw new BusinessHttpException(API_CODE.QUERY_INCOMPLETE, '缺少 projectId query 参数')
-    }
+  @Get('performance-event-line-chart')
+  findAllPerformanceEventLineChart(@Query(new EventQueryValidationPipe()) query: EventQuery) {
+    return this.performanceEventService.findAllEventLineChart(query)
+  }
 
+  @Get('user-behavior-event')
+  findAllUserBehaviorEventByProjectId(@Query(new EventQueryValidationPipe()) query: EventQuery) {
     return this.userBehaviorEventService.findAllEvent(query)
   }
 
   @Get('user-behavior-event/:id')
-  findUserBehaviorEventById(@Param('id') id: string, @Query() query: EventQuery) {
-    if (!query.projectId) {
-      throw new BusinessHttpException(API_CODE.QUERY_INCOMPLETE, '缺少 projectId query 参数')
-    }
-
+  findUserBehaviorEventById(@Param('id') id: string, @Query(new EventQueryValidationPipe()) query: EventQuery) {
     return this.userBehaviorEventService.findEventById(id, query)
   }
 }
