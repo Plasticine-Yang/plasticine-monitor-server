@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import dayjs from 'dayjs'
 import { ObjectId } from 'mongodb'
 import { MongoRepository } from 'typeorm'
+
+import type { EChartsLineData } from 'src/types'
 
 import { EventQuery } from './dto/event-query.dto'
 import { PerformanceEvent } from './entities/performance-event'
 import { PerformanceMetricsEnum } from './enums'
-import dayjs from 'dayjs'
 
 @Injectable()
 export class PerformanceEventService {
@@ -67,48 +69,12 @@ export class PerformanceEventService {
       },
     })
 
-    // 计算时间间隔
-    const firstDate = performanceEvents.at(0)?.environmentInfo.timestamp
-    const lastDate = performanceEvents.at(-1)?.environmentInfo.timestamp
-    const diffSeconds = dayjs(lastDate).diff(dayjs(firstDate), 'second')
-    const diffMinutes = dayjs(lastDate).diff(dayjs(firstDate), 'minute')
-    const diffHours = dayjs(lastDate).diff(dayjs(firstDate), 'hour')
-
-    // 根据时间间隔动态生成x轴的数据
-    const categories: string[] = []
-    if (diffSeconds < 60) {
-      let date = dayjs(firstDate).startOf('second')
-      while (date < dayjs(lastDate)) {
-        categories.push(date.format('YYYY-MM-DD HH:mm:ss'))
-        date = date.add(1, 'second')
-      }
-    } else if (diffMinutes < 60) {
-      let date = dayjs(firstDate).startOf('minute')
-      while (date < dayjs(lastDate)) {
-        categories.push(date.format('YYYY-MM-DD HH:mm'))
-        date = date.add(1, 'minute')
-      }
-    } else if (diffHours < 24) {
-      let date = dayjs(firstDate).startOf('hour')
-      while (date < dayjs(lastDate)) {
-        categories.push(date.format('YYYY-MM-DD HH'))
-        date = date.add(1, 'hour')
-      }
-    } else {
-      let date = dayjs(firstDate).startOf('day')
-      while (date < dayjs(lastDate)) {
-        categories.push(date.format('YYYY-MM-DD'))
-        date = date.add(1, 'day')
-      }
+    const echartsLineData: EChartsLineData = {
+      xAxis: performanceEvents.map((event) => dayjs(event.environmentInfo.timestamp).format('YYYY-MM-DD HH:mm:ss')),
+      yAxis: performanceEvents.map((event) => event.payload.value),
     }
 
-    // 生成y轴的value数据
-    const values = performanceEvents.map((item) => item.payload.value)
-
-    return {
-      categories,
-      values,
-    }
+    return echartsLineData
   }
 
   /** 获取 echart 折线图所需的数据 */
