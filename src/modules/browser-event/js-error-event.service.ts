@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { ObjectId } from 'mongodb'
 import { MongoRepository } from 'typeorm'
 
+import { queryProjectId, queryTimeRange, queryUserId } from 'src/utils'
+
 import { EventQuery } from './dto/event-query.dto'
 import { JSErrorEvent } from './entities/js-error-event'
 
@@ -13,17 +15,15 @@ export class JSErrorEventService {
 
   findAllEvent(query: EventQuery) {
     return this.jsErrorEventRepository.find({
-      'environmentInfo.projectId': {
-        $eq: query.projectId,
-      },
+      ...queryProjectId(query),
+      ...queryTimeRange(query),
+      ...queryUserId(query),
     })
   }
 
   findEventById(id: string, query: EventQuery) {
     return this.jsErrorEventRepository.findOneBy({
-      'environmentInfo.projectId': {
-        $eq: query.projectId,
-      },
+      ...queryProjectId(query),
       _id: new ObjectId(id),
     })
   }

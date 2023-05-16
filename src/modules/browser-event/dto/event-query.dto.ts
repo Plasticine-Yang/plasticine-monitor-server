@@ -10,4 +10,7 @@ export class EventQuery {
    * 1d - 过去 1 天内的数据
    */
   timeRange?: string
+
+  /** 用户 id */
+  userId?: string
 }

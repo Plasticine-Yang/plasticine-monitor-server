@@ -27,38 +27,27 @@ export class BrowserEventController {
     return this.browserEventService.create(createBrowserEventDto)
   }
 
+  /** 所有 JSErrorEvent */
   @Get('js-error-event')
   findAllJSErrorEventByProjectId(@Query(new EventQueryValidationPipe()) query: EventQuery) {
     return this.jsErrorEventService.findAllEvent(query)
   }
 
+  /** 单个 JSErrorEvent */
   @Get('js-error-event/:id')
   findJSErrorEventById(@Param('id') id: string, @Query(new EventQueryValidationPipe()) query: EventQuery) {
     return this.jsErrorEventService.findEventById(id, query)
   }
 
-  @Get('performance-event')
-  findAllPerformanceEventByProjectId(@Query(new EventQueryValidationPipe()) query: EventQuery) {
-    return this.performanceEventService.findAllEvent(query)
-  }
-
-  @Get('performance-event/:id')
-  findPerformanceEventById(@Param('id') id: string, @Query(new EventQueryValidationPipe()) query: EventQuery) {
-    return this.performanceEventService.findEventById(id, query)
-  }
-
+  /** PerformanceEvent echarts 折线图数据 */
   @Get('performance-event-line-chart')
   findAllPerformanceEventLineChart(@Query(new EventQueryValidationPipe()) query: EventQuery) {
     return this.performanceEventService.findAllEventLineChart(query)
   }
 
-  @Get('user-behavior-event')
+  /** 所有页面信息 */
+  @Get('pages')
   findAllUserBehaviorEventByProjectId(@Query(new EventQueryValidationPipe()) query: EventQuery) {
-    return this.userBehaviorEventService.findAllEvent(query)
-  }
-
-  @Get('user-behavior-event/:id')
-  findUserBehaviorEventById(@Param('id') id: string, @Query(new EventQueryValidationPipe()) query: EventQuery) {
-    return this.userBehaviorEventService.findEventById(id, query)
+    return this.userBehaviorEventService.findAllPages(query)
   }
 }
