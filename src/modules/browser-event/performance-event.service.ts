@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import dayjs from 'dayjs'
-import { ObjectId } from 'mongodb'
 import { MongoRepository } from 'typeorm'
 
 import type { EChartsLineData } from 'src/types'
 
+import { queryProjectId, queryTimeRange } from 'src/utils'
 import { EventQuery } from './dto/event-query.dto'
 import { PerformanceEvent } from './entities/performance-event'
 import { PerformanceMetricsEnum } from './enums'
-import { queryProjectId, queryTimeRange } from 'src/utils'
 
 @Injectable()
 export class PerformanceEventService {
