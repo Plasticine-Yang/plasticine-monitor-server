@@ -19,11 +19,15 @@ export function queryUserId(query: EventQuery) {
           $eq: query.userId,
         },
       }
-    : {}
+    : null
 }
 
 /** 按照时间段查询 */
 export function queryTimeRange(query: EventQuery) {
+  if (query.timeRange === undefined || query.timeRange === 'all') {
+    return null
+  }
+
   // 过去 xx 时间时的时间戳 - 1h -> 获取一小时之前的时间戳
   const currentTimestamp = dayjs()
   const parsedTimeBefore = parseTimeRange(query.timeRange)
@@ -43,7 +47,7 @@ export function queryTimeRange(query: EventQuery) {
           $lte: currentTimestamp.valueOf(),
         },
       }
-    : {}
+    : null
 }
 
 /**
