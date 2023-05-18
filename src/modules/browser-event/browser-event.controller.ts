@@ -1,16 +1,13 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Query, Res, UsePipes } from '@nestjs/common'
+import { Body, Controller, Get, HttpStatus, Param, Post, Query, Res } from '@nestjs/common'
 import type { Response } from 'express'
-
-import { BusinessHttpException } from 'src/common/exceptions'
-import { API_CODE } from 'src/constants'
 
 import { BrowserEventService } from './browser-event.service'
 import { CreateBrowserEventDto } from './dto/create-browser-event.dto'
 import { EventQuery } from './dto/event-query.dto'
 import { JSErrorEventService } from './js-error-event.service'
 import { PerformanceEventService } from './performance-event.service'
-import { UserBehaviorEventService } from './user-behavior-event.service'
 import { EventQueryValidationPipe } from './pipe'
+import { UserBehaviorEventService } from './user-behavior-event.service'
 
 @Controller('browser-event')
 export class BrowserEventController {
