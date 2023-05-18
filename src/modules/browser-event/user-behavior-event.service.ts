@@ -4,7 +4,7 @@ import { MongoRepository } from 'typeorm'
 
 import { EventQuery } from './dto/event-query.dto'
 import { UserBehaviorEvent } from './entities/user-behavior-event'
-import { queryProjectId } from 'src/utils'
+import { queryProjectId, queryUserId, querySessionId } from 'src/utils'
 import { UserBehaviorMetricsEnum } from './enums'
 
 @Injectable()
@@ -12,6 +12,7 @@ export class UserBehaviorEventService {
   @InjectRepository(UserBehaviorEvent)
   private userBehaviorEventRepository: MongoRepository<UserBehaviorEvent>
 
+  /** 获取所有页面的信息 */
   async findAllPages(query: EventQuery) {
     const res = await this.userBehaviorEventRepository
       .aggregate([
@@ -166,6 +167,37 @@ export class UserBehaviorEventService {
             performanceMetrics: 1,
           },
         },
+      ])
+      .toArray()
+
+    return res
+  }
+
+  /** 获取所有用户行为信息 */
+  async findUserBehaviorInfo(query: EventQuery) {
+    const res = this.userBehaviorEventRepository
+      .aggregate([
+        {
+          $match: {
+            ...queryProjectId(query),
+            ...queryUserId(query),
+            ...querySessionId(query),
+          },
+        },
+        {
+          $sort: {
+            'environmentInfo.timestamp': 1,
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            environmentInfo: 0,
+            eventType: 0,
+          },
+        },
+        { $unwind: '$payload' },
+        { $replaceRoot: { newRoot: '$payload' } },
       ])
       .toArray()
 

@@ -22,6 +22,17 @@ export function queryUserId(query: EventQuery) {
     : null
 }
 
+/** 按照会话 id 查询 */
+export function querySessionId(query: EventQuery) {
+  return query.sessionId
+    ? {
+        'environmentInfo.sessionId': {
+          $eq: query.sessionId,
+        },
+      }
+    : null
+}
+
 /** 按照时间段查询 */
 export function queryTimeRange(query: EventQuery) {
   if (query.timeRange === undefined || query.timeRange === 'all') {

@@ -22,3 +22,19 @@ export class EventQueryValidationPipe implements PipeTransform {
     return value
   }
 }
+
+export class UserBehaviorEventQueryValidationPipe extends EventQueryValidationPipe {
+  transform(value: EventQuery): EventQuery {
+    const validatedValue = super.transform(value)
+
+    if (!validatedValue.userId) {
+      throw new BadRequestException('缺少 userId query 参数')
+    }
+
+    if (!validatedValue.sessionId) {
+      throw new BadRequestException('缺少 sessionId query 参数')
+    }
+
+    return validatedValue
+  }
+}

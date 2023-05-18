@@ -13,4 +13,7 @@ export class EventQuery {
 
   /** 用户 id */
   userId?: string
+
+  /** 会话 id */
+  sessionId?: string
 }

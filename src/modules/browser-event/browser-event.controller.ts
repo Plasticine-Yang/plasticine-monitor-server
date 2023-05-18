@@ -6,7 +6,7 @@ import { CreateBrowserEventDto } from './dto/create-browser-event.dto'
 import { EventQuery } from './dto/event-query.dto'
 import { JSErrorEventService } from './js-error-event.service'
 import { PerformanceEventService } from './performance-event.service'
-import { EventQueryValidationPipe } from './pipe'
+import { EventQueryValidationPipe, UserBehaviorEventQueryValidationPipe } from './pipe'
 import { UserBehaviorEventService } from './user-behavior-event.service'
 
 @Controller('browser-event')
@@ -46,5 +46,11 @@ export class BrowserEventController {
   @Get('pages')
   findAllUserBehaviorEventByProjectId(@Query(new EventQueryValidationPipe()) query: EventQuery) {
     return this.userBehaviorEventService.findAllPages(query)
+  }
+
+  /** 获取用户行为信息 */
+  @Get('user-behavior-info')
+  findUserBehaviorInfo(@Query(new UserBehaviorEventQueryValidationPipe()) query: EventQuery) {
+    return this.userBehaviorEventService.findUserBehaviorInfo(query)
   }
 }
