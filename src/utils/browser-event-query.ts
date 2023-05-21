@@ -33,6 +33,17 @@ export function querySessionId(query: EventQuery) {
     : null
 }
 
+/** 按照页面路径查询 */
+export function queryPagePath(query: EventQuery) {
+  return query.pagePath
+    ? {
+        'environmentInfo.pagePath': {
+          $eq: query.pagePath,
+        },
+      }
+    : null
+}
+
 /** 按照时间段查询 */
 export function queryTimeRange(query: EventQuery) {
   if (query.timeRange === undefined || query.timeRange === 'all') {

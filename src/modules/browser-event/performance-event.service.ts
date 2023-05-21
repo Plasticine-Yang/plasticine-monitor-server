@@ -5,7 +5,7 @@ import { MongoRepository } from 'typeorm'
 
 import type { EChartsLineData } from 'src/types'
 
-import { queryProjectId, queryTimeRange } from 'src/utils'
+import { queryPagePath, queryProjectId, queryTimeRange } from 'src/utils'
 import { EventQuery } from './dto/event-query.dto'
 import { PerformanceEvent } from './entities/performance-event'
 import { PerformanceMetricsEnum } from './enums'
@@ -15,12 +15,39 @@ export class PerformanceEventService {
   @InjectRepository(PerformanceEvent)
   private performanceEventRepository: MongoRepository<PerformanceEvent>
 
+  async findAllPagePaths(query: EventQuery) {
+    const pagePaths = (
+      await this.performanceEventRepository
+        .aggregate([
+          {
+            $match: {
+              ...queryProjectId(query),
+            },
+          },
+          {
+            $group: {
+              _id: '$environmentInfo.pagePath',
+            },
+          },
+          {
+            $sort: {
+              _id: 1,
+            },
+          },
+        ])
+        .toArray()
+    ).map((item: any) => item._id)
+
+    return pagePaths
+  }
+
   async findEChartLineByMetricsType(metricsType: PerformanceMetricsEnum, query: EventQuery) {
     // 获取当前项目的 FP 数据
     const performanceEvents = await this.performanceEventRepository.find({
       where: {
         ...queryProjectId(query),
         ...queryTimeRange(query),
+        ...queryPagePath(query),
         'payload.name': {
           $eq: metricsType,
         },

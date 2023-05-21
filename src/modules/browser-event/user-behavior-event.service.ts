@@ -190,7 +190,13 @@ export class UserBehaviorEventService {
           },
         },
         { $unwind: '$payload' },
-        { $replaceRoot: { newRoot: '$payload' } },
+        {
+          $replaceRoot: {
+            newRoot: {
+              $mergeObjects: [{ environmentInfo: '$environmentInfo' }, '$payload'],
+            },
+          },
+        },
       ])
       .toArray()
 

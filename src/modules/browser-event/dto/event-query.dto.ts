@@ -16,4 +16,7 @@ export class EventQuery {
 
   /** 会话 id */
   sessionId?: string
+
+  /** 页面路径 */
+  pagePath?: string
 }

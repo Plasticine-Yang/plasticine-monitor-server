@@ -6,7 +6,11 @@ import { CreateBrowserEventDto } from './dto/create-browser-event.dto'
 import { EventQuery } from './dto/event-query.dto'
 import { JSErrorEventService } from './js-error-event.service'
 import { PerformanceEventService } from './performance-event.service'
-import { EventQueryValidationPipe, UserBehaviorEventQueryValidationPipe } from './pipe'
+import {
+  EventQueryValidationPipe,
+  PerformanceEventQueryValidationPipe,
+  UserBehaviorEventQueryValidationPipe,
+} from './pipe'
 import { UserBehaviorEventService } from './user-behavior-event.service'
 
 @Controller('browser-event')
@@ -36,9 +40,14 @@ export class BrowserEventController {
     return this.jsErrorEventService.findEventById(id, query)
   }
 
+  @Get('performance-event-page-paths')
+  findAllPerformanceEventPagePaths(@Query(new EventQueryValidationPipe()) query: EventQuery) {
+    return this.performanceEventService.findAllPagePaths(query)
+  }
+
   /** PerformanceEvent echarts 折线图数据 */
   @Get('performance-event-line-chart')
-  findAllPerformanceEventLineChart(@Query(new EventQueryValidationPipe()) query: EventQuery) {
+  findAllPerformanceEventLineChart(@Query(new PerformanceEventQueryValidationPipe()) query: EventQuery) {
     return this.performanceEventService.findAllEventLineChart(query)
   }
 

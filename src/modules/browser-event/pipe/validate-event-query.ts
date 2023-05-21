@@ -38,3 +38,15 @@ export class UserBehaviorEventQueryValidationPipe extends EventQueryValidationPi
     return validatedValue
   }
 }
+
+export class PerformanceEventQueryValidationPipe extends EventQueryValidationPipe {
+  transform(value: EventQuery): EventQuery {
+    const validatedValue = super.transform(value)
+
+    if (!validatedValue.pagePath) {
+      throw new BadRequestException('缺少 pagePath 参数')
+    }
+
+    return validatedValue
+  }
+}

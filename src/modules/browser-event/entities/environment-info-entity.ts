@@ -28,4 +28,7 @@ export class EnvironmentInfo {
 
   @Column()
   sessionId: string
+
+  @Column()
+  userAgent: string
 }

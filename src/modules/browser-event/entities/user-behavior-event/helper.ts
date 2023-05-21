@@ -46,6 +46,9 @@ export class NetworkRequest {
 
   @Column()
   body?: string
+
+  @Column()
+  reason?: string
 }
 
 @Entity()
