@@ -12,7 +12,10 @@ export class UserBehaviorPayload {
   name: UserBehaviorMetricsEnum
 
   @Column()
-  value: PageViewMetrics | JSErrorPayload | NetworkMetrics
+  value: PageViewMetrics | JSErrorPayload | NetworkMetrics | ClickMetrics
+
+  @Column()
+  timestamp: string
 }
 
 @Entity()
@@ -79,4 +82,19 @@ export class NetworkMetrics {
 
   @Column()
   duration: number
+}
+
+@Entity()
+export class ClickMetrics {
+  @ObjectIdColumn()
+  id?: string
+
+  @Column()
+  classList: string[]
+
+  @Column()
+  tagName: string
+
+  @Column()
+  textContent?: string
 }

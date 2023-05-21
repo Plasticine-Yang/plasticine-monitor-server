@@ -189,13 +189,6 @@ export class UserBehaviorEventService {
             'environmentInfo.timestamp': 1,
           },
         },
-        {
-          $project: {
-            _id: 0,
-            environmentInfo: 0,
-            eventType: 0,
-          },
-        },
         { $unwind: '$payload' },
         { $replaceRoot: { newRoot: '$payload' } },
       ])
